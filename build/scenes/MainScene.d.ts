@@ -3,6 +3,7 @@ import "@babylonjs/core/Helpers/sceneHelpers";
 import { Scene, SceneOptions } from "@babylonjs/core/scene";
 import "@babylonjs/core/Layers/effectLayerSceneComponent";
 import '@babylonjs/core/Loading/Plugins/babylonFileLoader';
+import '@babylonjs/core/Rendering/index';
 import { AssetsManager } from "@babylonjs/core/Misc/assetsManager";
 import { ArcRotateCamera } from "@babylonjs/core/Cameras/arcRotateCamera";
 import { AdvancedDynamicTexture } from "@babylonjs/gui/2D/advancedDynamicTexture";

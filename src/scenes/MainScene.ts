@@ -3,6 +3,7 @@ import "@babylonjs/core/Helpers/sceneHelpers";
 import { Scene, SceneOptions } from "@babylonjs/core/scene";
 import "@babylonjs/core/Layers/effectLayerSceneComponent";
 import '@babylonjs/core/Loading/Plugins/babylonFileLoader';
+import '@babylonjs/core/Rendering/index';
 // import { SceneLoader } from "@babylonjs/core/Loading/sceneLoader";
 import { GlowLayer } from "@babylonjs/core/Layers/glowLayer";
 import { AssetsManager } from "@babylonjs/core/Misc/assetsManager";
@@ -76,12 +77,6 @@ export class MainScene extends Scene {
 
     createEnvironment(this);
 
-    const meshTaskLamp = this.assetsManager.addContainerTask("meshTaskLamp", "", "./assets/meshes/", "lamp.glb");
-    meshTaskLamp.onSuccess = task => {
-      const lamp = task.loadedContainer.instantiateModelsToScene(name => name, true).rootNodes[0]
-      lamp.scaling = new Vector3(0.25, 0.25, 0.25);
-    };
-
     this.loadPlayer(this, engine, canvas);
 
     this.assetsManager.onFinish = () => {
@@ -105,92 +100,99 @@ export class MainScene extends Scene {
         let player = task.loadedMeshes[0];
         player.rotationQuaternion = null;
 
-        // let player = meshes[0];
-        // let skeleton = skeletons[0];
-        // player.skeleton = skeleton;
+      // const skinMaterial = (this.getMeshByName("Body") as Mesh).material as PBRMaterial;
+      // skinMaterial.subSurface.isScatteringEnabled = true;
+      // // @ts-ignore
+      // this.enablePrePassRenderer().metersPerUnit = 0.7;
+      // skinMaterial.metallic = 0;
+      // skinMaterial.roughness = 0.67;
+      // skinMaterial.subSurface.diffusionDistance = new Color3(1, 0.537, 0.537);
+      // skinMaterial.subSurface.scatteringDiffusionProfile = new Color3(1.0, 0.5, 0.25);
+      // // skinMaterial.subSurface.maximumThickness = 2.2;
+      // skinMaterial.subSurface.isTranslucencyEnabled = true;
+      // skinMaterial.subSurface.translucencyIntensity = 0.9;
+      // // @ts-ignore
+      // this.enablePrePassRenderer().samples = 8;
 
-        // skeleton.enableBlending(0.1);
-        //if the skeleton does not have any animation ranges then set them as below
-        // setAnimationRanges(skeleton);
-
-        // let sm = <StandardMaterial>player.material;
-        // if(sm.diffuseTexture!=null){
-        //   sm.backFaceCulling = true;
-        //   sm.ambientColor = new Color3(1,1,1);
-        // }
-
-        // player.scaling.z *= -1;
         player.position = new Vector3(0,0,0);
         player.checkCollisions = true;
         player.ellipsoid = new Vector3(0.5,1,0.5);
         player.ellipsoidOffset = new Vector3(0,1,0);
 
-        //rotate the camera behind the player
-        let alpha = -player.rotation.y-4.69;
+        let alpha = 0;
         let beta = Math.PI/2.5;
         let target = new Vector3(player.position.x,player.position.y+1.5,player.position.z);
 
         let camera = new ArcRotateCamera("ArcRotateCamera",alpha,beta,4,target,scene);
         camera.minZ = 0.0;
-        //standard camera setting
         camera.wheelPrecision = 15;
         camera.checkCollisions = false;
-        //make sure the keyboard keys controlling camera are different from those controlling player
-        //here we will not use any keyboard keys to control camera
         camera.keysLeft = [];
         camera.keysRight = [];
         camera.keysUp = [];
         camera.keysDown = [];
-        //how close can the camera come to player
         camera.lowerRadiusLimit = 0.5;
-        //how far can the camera go from the player
         camera.upperRadiusLimit = 20;
         camera.attachControl(canvas,false);
         this.activeCamera = camera;
 
         const animationGroups = {};
         task.loadedAnimationGroups.forEach(group => {
-          group.setWeightForAllAnimatables(0);
           animationGroups[group.name] = group;
         });
         animationGroups["jump"].loop = false;
-        animationGroups["idle"].setWeightForAllAnimatables(1);
         const agMap = {
           walk: animationGroups["walk"],
           walkBack: animationGroups["walkingBack"],
           idle: animationGroups["idle"],
           idleJump: animationGroups["jump"],
-          walkBackFast: animationGroups["runningBack"],
-          run: animationGroups["run"],
+          walkBackFast: animationGroups["joggingBack"],
+          run: animationGroups["jogging"],
           runJump: animationGroups["jump"],
-          fall: null,
+          fall: animationGroups["falling"],
           turnRight: animationGroups["turnRight"],
           turnRightFast: animationGroups["turnRight"],
           turnLeft: animationGroups["turnLeft"],
           turnLeftFast: animationGroups["turnLeft"],
           strafeLeft: animationGroups["walkLeftStrafe"],
-          strafeLeftFast: animationGroups["strafeWalkLeft"],
+          strafeLeftFast: animationGroups["jogLeftStrafe"],
           strafeRight: animationGroups["walkRightStrafe"],
-          strafeRightFast: animationGroups["strafeWalkRight"],
-          diagonalLeft: animationGroups["diagonalWalkLeft"],
-          diagonalLeftFast: animationGroups["diagonalRunLeft"],
-          diagonalRight: animationGroups["diagonalWalkRight"],
-          diagonalRightFast: animationGroups["diagonalRunRight"],
-          slideDown: null
+          strafeRightFast: animationGroups["jogRightStrafe"],
+          diagonalLeftForward: animationGroups["walkLeftForward"],
+          diagonalLeftForwardFast: animationGroups["joggingLeftForward"],
+          diagonalRightForward: animationGroups["walkRightForward"],
+          diagonalRightForwardFast: animationGroups["joggingRightForward"],
+          diagonalLeftBack: animationGroups["walkingLeftBack"],
+          diagonalLeftBackFast: animationGroups["joggingLeftBack"],
+          diagonalRightBack: animationGroups["walkingRightBack"],
+          diagonalRightBackFast: animationGroups["joggingRightBack"],
+          slideDown: animationGroups["falling"],
         }
-        //let CharacterController = org.ssatguru.babylonjs.component.CharacterController;
-        let cc = new CharacterController(<Mesh>player, camera, scene, agMap, true);
-        //below makes the controller point the camera at the player head which is approx
-        //1.5m above the player origin
-        cc.setCameraTarget(new Vector3(0,3.4,0));
 
-        //if the camera comes close to the player we want to enter first person mode.
+        let cc = new CharacterController(<Mesh>player, camera, scene, agMap, true);
+        cc.setCameraTarget(new Vector3(0,1.7,0));
         cc.setNoFirstPerson(false);
-        //the height of steps which the player can climb
         cc.setStepOffset(0.4);
         //the minimum and maximum slope the player can go up
         //between the two the player will start sliding down if it stops
         cc.setSlopeLimit(30,60);
+        cc.enableBlending(0.075);
+
+        cc.setStrafeLeftAnim(animationGroups["walkLeftStrafe"], 1.4, true);
+        cc.setStrafeRightAnim(animationGroups["walkRightStrafe"], 1.4, true);
+        cc.setLeftSpeed(0.8);
+        cc.setRightSpeed(0.8);
+        cc.setRightFastSpeed(1.6);
+        cc.setLeftFastSpeed(1.6);
+        cc.setStrafeFactor(1);
+        cc.setStrafeFactorWithBackward(0.2);
+
+        cc.setWalkSpeed(1.8);
+        cc.setBackSpeed(1.1);
+
+        cc.setDiagonalLeftSpeed(1.0);
+        cc.setDiagonalRightForwardSpeed(1.0);
+        cc.setStrafeFactorWithForward(0.8);
 
         cc.start();
 

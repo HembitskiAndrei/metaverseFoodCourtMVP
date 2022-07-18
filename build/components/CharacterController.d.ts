@@ -40,8 +40,12 @@ export declare class CharacterController {
     setRightFastSpeed(n: number): void;
     setDiagonalLeftSpeed(n: number): void;
     setDiagonalLeftFastSpeed(n: number): void;
-    setDiagonalRightSpeed(n: number): void;
-    setDiagonalRightFastSpeed(n: number): void;
+    setDiagonalRightForwardSpeed(n: number): void;
+    setDiagonalRightForwardFastSpeed(n: number): void;
+    setDiagonalRightBackSpeed(n: number): void;
+    setDiagonalRightBackFastSpeed(n: number): void;
+    setDiagonalLeftBackSpeed(n: number): void;
+    setDiagonalLeftBackFastSpeed(n: number): void;
     setTurnSpeed(n: number): void;
     setTurnFastSpeed(n: number): void;
     setGravity(n: number): void;
@@ -117,8 +121,12 @@ export declare class CharacterController {
     setStrafeRightFastAnim(rangeName: string | AnimationGroup, rate: number, loop: boolean): void;
     setStrafeLeftAnim(rangeName: string | AnimationGroup, rate: number, loop: boolean): void;
     setStrafeLeftFastAnim(rangeName: string | AnimationGroup, rate: number, loop: boolean): void;
-    setDiagonalRightAnim(rangeName: string | AnimationGroup, rate: number, loop: boolean): void;
-    setDiagonalRightFastAnim(rangeName: string | AnimationGroup, rate: number, loop: boolean): void;
+    setDiagonalRightForwardAnim(rangeName: string | AnimationGroup, rate: number, loop: boolean): void;
+    setDiagonalRightForwardFastAnim(rangeName: string | AnimationGroup, rate: number, loop: boolean): void;
+    setDiagonalRightBackAnim(rangeName: string | AnimationGroup, rate: number, loop: boolean): void;
+    setDiagonalRightBackFastAnim(rangeName: string | AnimationGroup, rate: number, loop: boolean): void;
+    setDiagonalLeftBackAnim(rangeName: string | AnimationGroup, rate: number, loop: boolean): void;
+    setDiagonalLeftBackFastAnim(rangeName: string | AnimationGroup, rate: number, loop: boolean): void;
     setDiagonalLeftAnim(rangeName: string | AnimationGroup, rate: number, loop: boolean): void;
     setDiagonalLeftFastAnim(rangeName: string | AnimationGroup, rate: number, loop: boolean): void;
     setIdleJumpAnim(rangeName: string | AnimationGroup, rate: number, loop: boolean): void;
@@ -131,7 +139,9 @@ export declare class CharacterController {
     setStrafeLeftKey(key: string): void;
     setStrafeRightKey(key: string): void;
     setDiagonalLeftKey(key: string): void;
-    setDiagonalRightKey(key: string): void;
+    setDiagonalRightForwardKey(key: string): void;
+    setDiagonalRightBackKey(key: string): void;
+    setDiagonalLeftBackKey(key: string): void;
     setJumpKey(key: string): void;
     setCameraElasticity(b: boolean): void;
     setCameraTarget(v: Vector3): void;
@@ -189,6 +199,10 @@ export declare class CharacterController {
     private _setRHS;
     private _strafeFactorWithForward;
     setStrafeFactorWithForward(n: number): void;
+    private _strafeFactorWithBackward;
+    setStrafeFactorWithBackward(n: number): void;
+    private _strafeFactor;
+    setStrafeFactor(n: number): void;
     /**
      * Use setFaceForward(true|false) to indicate that the avatar face  faces forward (true) or backward (false).
      * The avatar face faces forward if its face points to positive local Z axis direction
@@ -228,10 +242,8 @@ export declare class CharacterController {
     private _wasWalking;
     private _wasRunning;
     private _moveVector;
-    private _animationWeight;
     private _isAvFacingCamera;
     private _moveAVandCamera;
-    private _onBeforeAnimation;
     private _jumpStartPosY;
     private _jumpTime;
     private _doJump;
@@ -286,10 +298,14 @@ export declare class CharacterController {
     strafeLeftFast(b: boolean): void;
     strafeRight(b: boolean): void;
     strafeRightFast(b: boolean): void;
-    diagonalRight(b: boolean): void;
-    diagonalRightFast(b: boolean): void;
-    diagonalLeft(b: boolean): void;
-    diagonalLeftFast(b: boolean): void;
+    diagonalRightForward(b: boolean): void;
+    diagonalRightForwardFast(b: boolean): void;
+    diagonalLeftForward(b: boolean): void;
+    diagonalLeftForwardFast(b: boolean): void;
+    diagonalRightBack(b: boolean): void;
+    diagonalRightBackFast(b: boolean): void;
+    diagonalLeftBack(b: boolean): void;
+    diagonalLeftBackFast(b: boolean): void;
     jump(): void;
     idle(): void;
     private _act;
@@ -358,10 +374,14 @@ export declare class ActionMap {
     strafeLeftFast: ActionData;
     strafeRight: ActionData;
     strafeRightFast: ActionData;
-    diagonalRight: ActionData;
-    diagonalRightFast: ActionData;
-    diagonalLeft: ActionData;
-    diagonalLeftFast: ActionData;
+    diagonalRightForward: ActionData;
+    diagonalRightForwardFast: ActionData;
+    diagonalRightBack: ActionData;
+    diagonalRightBackFast: ActionData;
+    diagonalLeftForward: ActionData;
+    diagonalLeftForwardFast: ActionData;
+    diagonalLeftBack: ActionData;
+    diagonalLeftBackFast: ActionData;
     slideBack: ActionData;
     reset(): void;
 }

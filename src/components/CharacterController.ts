@@ -10,7 +10,6 @@ import {PickingInfo} from "@babylonjs/core/Collisions/pickingInfo";
 import {AnimationGroup, TargetedAnimation} from "@babylonjs/core/Animations/animationGroup";
 import {TransformNode} from "@babylonjs/core/Meshes/transformNode";
 import {DeepImmutable} from "@babylonjs/core/types";
-import {Scalar} from "@babylonjs/core/Maths/math.scalar";
 
 export class CharacterController {
   // @ts-ignore
@@ -44,9 +43,6 @@ export class CharacterController {
   private _cameraTarget: Vector3 = Vector3.Zero();
   //should we go into first person view when camera is near avatar (radius is lowerradius limit)
   private _noFirstPerson: boolean = false;
-
-  // private _currentAnimation: ActionData;
-  // private _onBeforeAnimationCurrent: () => {};
 
   public setSlopeLimit(minSlopeLimit: number, maxSlopeLimit: number) {
     this._minSlopeLimit = minSlopeLimit;
@@ -90,19 +86,31 @@ export class CharacterController {
     this._actionMap.strafeRight.speed = n;
   }
   public setRightFastSpeed(n: number) {
-    this._actionMap.strafeLeftFast.speed = n;
+    this._actionMap.strafeRightFast.speed = n;
   }
   public setDiagonalLeftSpeed(n: number) {
-    this._actionMap.diagonalLeft.speed = n;
+    this._actionMap.diagonalLeftForward.speed = n;
   }
   public setDiagonalLeftFastSpeed(n: number) {
-    this._actionMap.diagonalLeftFast.speed = n;
+    this._actionMap.diagonalLeftForwardFast.speed = n;
   }
-  public setDiagonalRightSpeed(n: number) {
-    this._actionMap.diagonalRight.speed = n;
+  public setDiagonalRightForwardSpeed(n: number) {
+    this._actionMap.diagonalRightForward.speed = n;
   }
-  public setDiagonalRightFastSpeed(n: number) {
-    this._actionMap.diagonalRightFast.speed = n;
+  public setDiagonalRightForwardFastSpeed(n: number) {
+    this._actionMap.diagonalRightForwardFast.speed = n;
+  }
+  public setDiagonalRightBackSpeed(n: number) {
+    this._actionMap.diagonalRightBack.speed = n;
+  }
+  public setDiagonalRightBackFastSpeed(n: number) {
+    this._actionMap.diagonalRightBackFast.speed = n;
+  }
+  public setDiagonalLeftBackSpeed(n: number) {
+    this._actionMap.diagonalLeftBack.speed = n;
+  }
+  public setDiagonalLeftBackFastSpeed(n: number) {
+    this._actionMap.diagonalLeftBackFast.speed = n;
   }
   // get turnSpeed in degrees per second.
   // store in radians per second
@@ -397,19 +405,33 @@ export class CharacterController {
   public setStrafeLeftFastAnim(rangeName: string | AnimationGroup, rate: number, loop: boolean) {
     this._setAnim(this._actionMap.strafeLeftFast, rangeName, rate, loop);
   }
-  public setDiagonalRightAnim(rangeName: string | AnimationGroup, rate: number, loop: boolean) {
-    this._setAnim(this._actionMap.diagonalRight, rangeName, rate, loop);
-    this._copySlowAnims(this._actionMap.diagonalRightFast, this._actionMap.diagonalRight);
+  public setDiagonalRightForwardAnim(rangeName: string | AnimationGroup, rate: number, loop: boolean) {
+    this._setAnim(this._actionMap.diagonalRightForward, rangeName, rate, loop);
+    this._copySlowAnims(this._actionMap.diagonalRightForwardFast, this._actionMap.diagonalRightForward);
   }
-  public setDiagonalRightFastAnim(rangeName: string | AnimationGroup, rate: number, loop: boolean) {
-    this._setAnim(this._actionMap.diagonalRightFast, rangeName, rate, loop);
+  public setDiagonalRightForwardFastAnim(rangeName: string | AnimationGroup, rate: number, loop: boolean) {
+    this._setAnim(this._actionMap.diagonalRightForwardFast, rangeName, rate, loop);
+  }
+  public setDiagonalRightBackAnim(rangeName: string | AnimationGroup, rate: number, loop: boolean) {
+    this._setAnim(this._actionMap.diagonalRightBack, rangeName, rate, loop);
+    this._copySlowAnims(this._actionMap.diagonalRightBackFast, this._actionMap.diagonalRightBack);
+  }
+  public setDiagonalRightBackFastAnim(rangeName: string | AnimationGroup, rate: number, loop: boolean) {
+    this._setAnim(this._actionMap.diagonalRightBackFast, rangeName, rate, loop);
+  }
+  public setDiagonalLeftBackAnim(rangeName: string | AnimationGroup, rate: number, loop: boolean) {
+    this._setAnim(this._actionMap.diagonalLeftBack, rangeName, rate, loop);
+    this._copySlowAnims(this._actionMap.diagonalLeftBackFast, this._actionMap.diagonalLeftBack);
+  }
+  public setDiagonalLeftBackFastAnim(rangeName: string | AnimationGroup, rate: number, loop: boolean) {
+    this._setAnim(this._actionMap.diagonalLeftBackFast, rangeName, rate, loop);
   }
   public setDiagonalLeftAnim(rangeName: string | AnimationGroup, rate: number, loop: boolean) {
-    this._setAnim(this._actionMap.diagonalLeft, rangeName, rate, loop);
-    this._copySlowAnims(this._actionMap.diagonalLeftFast, this._actionMap.diagonalLeft);
+    this._setAnim(this._actionMap.diagonalLeftForward, rangeName, rate, loop);
+    this._copySlowAnims(this._actionMap.diagonalLeftForwardFast, this._actionMap.diagonalLeftForward);
   }
   public setDiagonalLeftFastAnim(rangeName: string | AnimationGroup, rate: number, loop: boolean) {
-    this._setAnim(this._actionMap.diagonalLeftFast, rangeName, rate, loop);
+    this._setAnim(this._actionMap.diagonalLeftForwardFast, rangeName, rate, loop);
   }
   public setIdleJumpAnim(rangeName: string | AnimationGroup, rate: number, loop: boolean) {
     this._setAnim(this._actionMap.idleJump, rangeName, rate, loop);
@@ -441,10 +463,16 @@ export class CharacterController {
     this._actionMap.strafeRight.key = key.toLowerCase();
   }
   public setDiagonalLeftKey(key: string) {
-    this._actionMap.diagonalLeft.key = key.toLowerCase();
+    this._actionMap.diagonalLeftForward.key = key.toLowerCase();
   }
-  public setDiagonalRightKey(key: string) {
-    this._actionMap.diagonalRight.key = key.toLowerCase();
+  public setDiagonalRightForwardKey(key: string) {
+    this._actionMap.diagonalRightForward.key = key.toLowerCase();
+  }
+  public setDiagonalRightBackKey(key: string) {
+    this._actionMap.diagonalRightBack.key = key.toLowerCase();
+  }
+  public setDiagonalLeftBackKey(key: string) {
+    this._actionMap.diagonalLeftBack.key = key.toLowerCase();
   }
   public setJumpKey(key: string) {
     this._actionMap.idleJump.key = key.toLowerCase();
@@ -504,8 +532,10 @@ export class CharacterController {
     this._copySlowAnims(this._actionMap.turnLeftFast, this._actionMap.turnLeft);
     this._copySlowAnims(this._actionMap.strafeRightFast, this._actionMap.strafeRight);
     this._copySlowAnims(this._actionMap.strafeLeftFast, this._actionMap.strafeLeft);
-    this._copySlowAnims(this._actionMap.diagonalRightFast, this._actionMap.diagonalRight);
-    this._copySlowAnims(this._actionMap.diagonalLeftFast, this._actionMap.diagonalLeft);
+    this._copySlowAnims(this._actionMap.diagonalRightForwardFast, this._actionMap.diagonalRightForward);
+    this._copySlowAnims(this._actionMap.diagonalRightBackFast, this._actionMap.diagonalRightBack);
+    this._copySlowAnims(this._actionMap.diagonalLeftForwardFast, this._actionMap.diagonalLeftForward);
+    this._copySlowAnims(this._actionMap.diagonalLeftBackFast, this._actionMap.diagonalLeftBack);
   }
 
   private _copySlowAnims(f: ActionData, s: ActionData) {
@@ -579,6 +609,14 @@ export class CharacterController {
   private _strafeFactorWithForward: number = 1;
   public setStrafeFactorWithForward(n: number) {
     this._strafeFactorWithForward = n;
+  }
+  private _strafeFactorWithBackward: number = 0.15;
+  public setStrafeFactorWithBackward(n: number) {
+    this._strafeFactorWithBackward = n;
+  }
+  private _strafeFactor: number = 0.75;
+  public setStrafeFactor(n: number) {
+    this._strafeFactor = n;
   }
   /**
    * Use setFaceForward(true|false) to indicate that the avatar face  faces forward (true) or backward (false).
@@ -707,8 +745,6 @@ export class CharacterController {
   private _wasRunning: boolean = false;
   private _moveVector: Vector3;
 
-  private _animationWeight = 0;
-
   //used only in mode 1
   //value 1 or -1 , -1 if avatar is facing camera
   //private _notFacingCamera = 1;
@@ -741,27 +777,12 @@ export class CharacterController {
           if (this._isAG) {
             if (this._prevAnim != null && this._prevAnim.exist) {
               this._prevAnim.ag.stop();
-
-              // anim.ag.syncAllAnimationsWith(null);
-              // this._prevAnim.ag.syncAllAnimationsWith(anim.ag.animatables[0]);
-              // console.log(this._animationWeight)
-              // // this._prevAnim.ag.setWeightForAllAnimatables(1);
-              // // anim.ag.setWeightForAllAnimatables(0);
-              // // @ts-ignore
-              // this._onBeforeAnimationCurrent = this._onBeforeAnimation(this._prevAnim.ag, anim.ag);
-              // this._scene.onBeforeAnimationsObservable.add(this._onBeforeAnimationCurrent);
             }
-            // if (this._currentAnimation) {
-            //   let weight = 0;
-            //   this._currentAnimation.ag.setWeightForAllAnimatables(1);
-            //   // @ts-ignore
-            //   this._onBeforeAnimationCurrent = this._onBeforeAnimation(weight, this._currentAnimation.ag, anim.ag)
-            // }
             //TODO use start instead of play ?
-            anim.ag.speedRatio = anim.rate;
-            anim.ag.play(anim.loop);
-            // this._currentAnimation = anim;
-            // anim.ag.start(anim.loop, anim.rate);
+              // anim.ag.speedRatio = anim.rate;
+              // anim.ag.play(anim.loop);
+              // this._currentAnimation = anim;
+            anim.ag.start(anim.loop, anim.rate);
           } else {
             this._skeleton.beginAnimation(anim.name, anim.loop, anim.rate);
           }
@@ -772,19 +793,7 @@ export class CharacterController {
     this._updateTargetValue();
     return;
   }
-// @ts-ignore
-  private _onBeforeAnimation(currentAnimation: AnimationGroup, nextAnimation: AnimationGroup,) {
-    this._animationWeight = Scalar.Clamp(this._animationWeight + 0.01, 0, 1);
-    currentAnimation.setWeightForAllAnimatables(this._animationWeight);
-    nextAnimation.setWeightForAllAnimatables(1 - this._animationWeight);
 
-    // if (this._animationWeight === 1) {
-    //   currentAnimation.setWeightForAllAnimatables(1);
-    //   currentAnimation.stop();
-    //   this._animationWeight = 0;
-    //   this._scene.onBeforeAnimationsObservable.removeCallback(this._onBeforeAnimationCurrent);
-    // }
-  };
   //verical position of AV when it is about to start a jump
   private _jumpStartPosY: number = 0;
   //for how long the AV has been in the jump
@@ -938,56 +947,81 @@ export class CharacterController {
           this._moveVector = this._avatar.calcMovePOV(sign * horizDist, -this._freeFallDist, 0);
           moving = true;
           break;
-        case (this._act._diagonalRight && this._act._walk):
+        case (this._act._diagonalRightForward && this._act._walk):
           sign = -this._signRHS * this._isAvFacingCamera();
-          horizDist = this._actionMap.diagonalRight.speed * dt;
+          horizDist = this._actionMap.diagonalRightForward.speed * dt;
           if (this._act._speedMod) {
-            horizDist = this._actionMap.diagonalRightFast.speed * dt;
-            anim = (-this._ffSign * sign > 0) ? this._actionMap.diagonalLeftFast : this._actionMap.diagonalRightFast;
+            horizDist = this._actionMap.diagonalRightForwardFast.speed * dt;
+            anim = (-this._ffSign * sign > 0) ? this._actionMap.diagonalLeftForwardFast : this._actionMap.diagonalRightForwardFast;
           } else {
-            anim = (-this._ffSign * sign > 0) ? this._actionMap.diagonalLeft : this._actionMap.diagonalRight;
+            anim = (-this._ffSign * sign > 0) ? this._actionMap.diagonalLeftForward : this._actionMap.diagonalRightForward;
           }
           this._moveVector = this._avatar.calcMovePOV(sign * horizDist, -this._freeFallDist, this._ffSign * horizDist * this._strafeFactorWithForward);
           moving = true;
           break;
-        case (this._act._diagonalLeft && this._act._walk):
+        case (this._act._diagonalLeftForward && this._act._walk):
           sign = this._signRHS * this._isAvFacingCamera();
-          horizDist = this._actionMap.diagonalLeft.speed * dt;
+          horizDist = this._actionMap.diagonalLeftForward.speed * dt;
           if (this._act._speedMod) {
-            horizDist = this._actionMap.diagonalLeftFast.speed * dt;
-            anim = (-this._ffSign * sign > 0) ? this._actionMap.diagonalLeftFast : this._actionMap.diagonalRightFast;
+            horizDist = this._actionMap.diagonalLeftForwardFast.speed * dt;
+            anim = (-this._ffSign * sign > 0) ? this._actionMap.diagonalLeftForwardFast : this._actionMap.diagonalRightForwardFast;
           } else {
-            anim = (-this._ffSign * sign > 0) ? this._actionMap.diagonalLeft : this._actionMap.diagonalRight;
+            anim = (-this._ffSign * sign > 0) ? this._actionMap.diagonalLeftForward : this._actionMap.diagonalRightForward;
           }
 
           this._moveVector = this._avatar.calcMovePOV(sign * horizDist, -this._freeFallDist, this._ffSign * horizDist * this._strafeFactorWithForward);
           moving = true;
           break;
-        case (this._act._stepRight && this._act._walkback):
+        case (this._act._diagonalRightBack && this._act._walkback):
           sign = -this._signRHS * this._isAvFacingCamera();
-          horizDist = this._actionMap.strafeRight.speed * dt;
+          horizDist = this._actionMap.diagonalRightBack.speed * dt;
           if (this._act._speedMod) {
-            horizDist = this._actionMap.strafeRightFast.speed * dt;
-            anim = (-this._ffSign * sign > 0) ? this._actionMap.strafeLeftFast : this._actionMap.strafeRightFast;
+            horizDist = this._actionMap.diagonalRightBackFast.speed * dt;
+            anim = (-this._ffSign * sign > 0) ? this._actionMap.diagonalLeftBackFast : this._actionMap.diagonalRightBackFast;
           } else {
-            anim = (-this._ffSign * sign > 0) ? this._actionMap.strafeLeft : this._actionMap.strafeRight;
+            anim = (-this._ffSign * sign > 0) ? this._actionMap.diagonalLeftBack : this._actionMap.diagonalRightBack;
           }
-          this._moveVector = this._avatar.calcMovePOV(sign * horizDist, -this._freeFallDist, -this._ffSign * horizDist * this._strafeFactorWithForward);
+          this._moveVector = this._avatar.calcMovePOV(sign * horizDist, -this._freeFallDist, -this._ffSign * horizDist * this._strafeFactorWithBackward);
           moving = true;
           break;
-        case (this._act._stepLeft && this._act._walkback):
+        case (this._act._diagonalLeftBack && this._act._walkback):
           sign = this._signRHS * this._isAvFacingCamera();
-          horizDist = this._actionMap.strafeLeft.speed * dt;
+          horizDist = this._actionMap.diagonalLeftBack.speed * dt;
           if (this._act._speedMod) {
-            horizDist = this._actionMap.strafeLeftFast.speed * dt;
-            anim = (-this._ffSign * sign > 0) ? this._actionMap.strafeLeftFast : this._actionMap.strafeRightFast;
+            horizDist = this._actionMap.diagonalLeftBackFast.speed * dt;
+            anim = (-this._ffSign * sign > 0) ? this._actionMap.diagonalLeftBackFast : this._actionMap.diagonalRightBackFast;
           } else {
-            anim = (-this._ffSign * sign > 0) ? this._actionMap.strafeLeft : this._actionMap.strafeRight;
+            anim = (-this._ffSign * sign > 0) ? this._actionMap.diagonalLeftBack : this._actionMap.diagonalRightBack;
           }
 
-          this._moveVector = this._avatar.calcMovePOV(sign * horizDist, -this._freeFallDist, -this._ffSign * horizDist * this._strafeFactorWithForward);
+          this._moveVector = this._avatar.calcMovePOV(sign * horizDist, -this._freeFallDist, -this._ffSign * horizDist * this._strafeFactorWithBackward);
           moving = true;
           break;
+        // case (this._act._stepRight && this._act._walkback):
+        //   sign = -this._signRHS * this._isAvFacingCamera();
+        //   horizDist = this._actionMap.strafeRight.speed * dt * this._strafeFactor;
+        //   if (this._act._speedMod) {
+        //     horizDist = this._actionMap.strafeRightFast.speed * dt;
+        //     anim = (-this._ffSign * sign > 0) ? this._actionMap.strafeLeftFast : this._actionMap.strafeRightFast;
+        //   } else {
+        //     anim = (-this._ffSign * sign > 0) ? this._actionMap.strafeLeft : this._actionMap.strafeRight;
+        //   }
+        //   this._moveVector = this._avatar.calcMovePOV(sign * horizDist, -this._freeFallDist, -this._ffSign * horizDist * this._strafeFactorWithBackward);
+        //   moving = true;
+        //   break;
+        // case (this._act._stepLeft && this._act._walkback):
+        //   sign = this._signRHS * this._isAvFacingCamera();
+        //   horizDist = this._actionMap.strafeLeft.speed * dt  * this._strafeFactor;
+        //   if (this._act._speedMod) {
+        //     horizDist = this._actionMap.strafeLeftFast.speed * dt;
+        //     anim = (-this._ffSign * sign > 0) ? this._actionMap.strafeLeftFast : this._actionMap.strafeRightFast;
+        //   } else {
+        //     anim = (-this._ffSign * sign > 0) ? this._actionMap.strafeLeft : this._actionMap.strafeRight;
+        //   }
+        //
+        //   this._moveVector = this._avatar.calcMovePOV(sign * horizDist, -this._freeFallDist, -this._ffSign * horizDist * this._strafeFactorWithBackward);
+        //   moving = true;
+        //   break;
         case (this._act._walk || (this._noRot && this._mode == 0)):
           if (this._act._speedMod) {
             this._wasRunning = true;
@@ -1313,7 +1347,18 @@ export class CharacterController {
 
   private _move: boolean = false;
   public anyMovement(): boolean {
-    return (this._act._walk || this._act._walkback || this._act._turnLeft || this._act._turnRight || this._act._stepLeft || this._act._stepRight || this._act._diagonalLeft || this._act._diagonalRight);
+    return (
+      this._act._walk
+      || this._act._walkback
+      || this._act._turnLeft
+      || this._act._turnRight
+      || this._act._stepLeft
+      || this._act._stepRight
+      || this._act._diagonalLeftForward
+      || this._act._diagonalRightForward
+      || this._act._diagonalLeftBack
+      || this._act._diagonalRightBack
+    );
   }
 
   private _onKeyDown(e: KeyboardEvent) {
@@ -1334,11 +1379,11 @@ export class CharacterController {
       case this._actionMap.walk.key:
         this._act._walk = true;
         if (this._act._stepRight) {
-          this._act._diagonalRight = true;
+          this._act._diagonalRightForward = true;
           this._act._stepRight = false;
         }
         if (this._act._stepLeft) {
-          this._act._diagonalLeft = true;
+          this._act._diagonalLeftForward = true;
           this._act._stepLeft = false;
         }
         break;
@@ -1356,17 +1401,29 @@ export class CharacterController {
       case "arrowdown":
       case this._actionMap.walkBack.key:
         this._act._walkback = true;
+        if (this._act._stepRight) {
+          this._act._diagonalRightBack = true;
+          this._act._stepRight = false;
+        }
+        if (this._act._stepLeft) {
+          this._act._diagonalLeftBack = true;
+          this._act._stepLeft = false;
+        }
         break;
       case this._actionMap.strafeLeft.key:
         if (this._act._walk) {
-          this._act._diagonalLeft = true;
+          this._act._diagonalLeftForward = true;
+        } else if (this._act._walkback) {
+          this._act._diagonalLeftBack = true;
         } else {
           this._act._stepLeft = true;
         }
         break;
       case this._actionMap.strafeRight.key:
         if (this._act._walk) {
-          this._act._diagonalRight = true;
+          this._act._diagonalRightForward = true;
+        } else if (this._act._walkback) {
+          this._act._diagonalRightBack = true;
         } else {
           this._act._stepRight = true;
         }
@@ -1385,12 +1442,12 @@ export class CharacterController {
       case "arrowup":
       case this._actionMap.walk.key:
         this._act._walk = false;
-        if (this._act._diagonalRight) {
-          this._act._diagonalRight = false;
+        if (this._act._diagonalRightForward) {
+          this._act._diagonalRightForward = false;
           this._act._stepRight = true;
         }
-        if (this._act._diagonalLeft) {
-          this._act._diagonalLeft = false;
+        if (this._act._diagonalLeftForward) {
+          this._act._diagonalLeftForward = false;
           this._act._stepLeft = true;
         }
         break;
@@ -1410,14 +1467,24 @@ export class CharacterController {
       case "arrowdown":
       case this._actionMap.walkBack.key:
         this._act._walkback = false;
+        if (this._act._diagonalRightBack) {
+          this._act._diagonalRightBack = false;
+          this._act._stepRight = true;
+        }
+        if (this._act._diagonalLeftBack) {
+          this._act._diagonalLeftBack = false;
+          this._act._stepLeft = true;
+        }
         break;
       case this._actionMap.strafeLeft.key:
         this._act._stepLeft = false;
-        this._act._diagonalLeft = false;
+        this._act._diagonalLeftForward = false;
+        this._act._diagonalLeftBack = false;
         break;
       case this._actionMap.strafeRight.key:
         this._act._stepRight = false;
-        this._act._diagonalRight = false;
+        this._act._diagonalRightForward = false;
+        this._act._diagonalRightBack = false;
         break;
     }
     this._move = this.anyMovement();
@@ -1484,18 +1551,32 @@ export class CharacterController {
     this._act._stepRight = b;
     this._act._speedMod = b;
   }
-  public diagonalRight(b: boolean) {
-    this._act._diagonalRight = b;
+  public diagonalRightForward(b: boolean) {
+    this._act._diagonalRightForward = b;
   }
-  public diagonalRightFast(b: boolean) {
-    this._act._diagonalRight = b;
+  public diagonalRightForwardFast(b: boolean) {
+    this._act._diagonalRightForward = b;
     this._act._speedMod = b;
   }
-  public diagonalLeft(b: boolean) {
-    this._act._diagonalLeft = b;
+  public diagonalLeftForward(b: boolean) {
+    this._act._diagonalLeftForward = b;
   }
-  public diagonalLeftFast(b: boolean) {
-    this._act._diagonalLeft = b;
+  public diagonalLeftForwardFast(b: boolean) {
+    this._act._diagonalLeftForward = b;
+    this._act._speedMod = b;
+  }
+  public diagonalRightBack(b: boolean) {
+    this._act._diagonalRightBack = b;
+  }
+  public diagonalRightBackFast(b: boolean) {
+    this._act._diagonalRightBack = b;
+    this._act._speedMod = b;
+  }
+  public diagonalLeftBack(b: boolean) {
+    this._act._diagonalLeftBack = b;
+  }
+  public diagonalLeftBackFast(b: boolean) {
+    this._act._diagonalLeftBack = b;
     this._act._speedMod = b;
   }
   public jump() {
@@ -1660,8 +1741,10 @@ class _Action {
   public _turnLeft: boolean = false;
   public _stepRight: boolean = false;
   public _stepLeft: boolean = false;
-  public _diagonalRight: boolean = false;
-  public _diagonalLeft: boolean = false;
+  public _diagonalRightForward: boolean = false;
+  public _diagonalLeftForward: boolean = false;
+  public _diagonalRightBack: boolean = false;
+  public _diagonalLeftBack: boolean = false;
   public _jump: boolean = false;
 
   // speed modifier - changes speed of movement
@@ -1679,8 +1762,10 @@ class _Action {
     this._turnLeft = false;
     this._stepRight = false;
     this._stepLeft = false;
-    this._diagonalRight = false;
-    this._diagonalLeft = false;
+    this._diagonalRightForward = false;
+    this._diagonalLeftForward = false;
+    this._diagonalRightBack = false;
+    this._diagonalLeftBack = false;
     this._jump = false;
     this._speedMod = false;
   }
@@ -1746,10 +1831,14 @@ export class ActionMap {
   public strafeLeftFast = new ActionData("strafeLeftFast", 3, "na");
   public strafeRight = new ActionData("strafeRight", 1.5, "d");
   public strafeRightFast = new ActionData("strafeRightFast", 3, "na");
-  public diagonalRight = new ActionData("diagonalRight", 1.5, "d");
-  public diagonalRightFast = new ActionData("diagonalRightFast", 3, "na");
-  public diagonalLeft = new ActionData("diagonalLeft", 1.5, "a");
-  public diagonalLeftFast = new ActionData("diagonalLeftFast", 3, "na");
+  public diagonalRightForward = new ActionData("diagonalRightForward", 1.5, "d");
+  public diagonalRightForwardFast = new ActionData("diagonalRightForwardFast", 3, "na");
+  public diagonalRightBack = new ActionData("diagonalRightBack", 1.5, "d");
+  public diagonalRightBackFast = new ActionData("diagonalRightBackFast", 3, "na");
+  public diagonalLeftForward = new ActionData("diagonalLeftForward", 1.5, "a");
+  public diagonalLeftForwardFast = new ActionData("diagonalLeftForwardFast", 3, "na");
+  public diagonalLeftBack = new ActionData("diagonalLeftBack", 1.5, "a");
+  public diagonalLeftBackFast = new ActionData("diagonalLeftBackFast", 3, "na");
   public slideBack = new ActionData("slideBack", 0, "na");
 
   public reset() {
