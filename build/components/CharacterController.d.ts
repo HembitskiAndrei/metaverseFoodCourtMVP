@@ -38,8 +38,8 @@ export declare class CharacterController {
     setLeftFastSpeed(n: number): void;
     setRightSpeed(n: number): void;
     setRightFastSpeed(n: number): void;
-    setDiagonalLeftSpeed(n: number): void;
-    setDiagonalLeftFastSpeed(n: number): void;
+    setDiagonalLeftForwardSpeed(n: number): void;
+    setDiagonalLeftForwardFastSpeed(n: number): void;
     setDiagonalRightForwardSpeed(n: number): void;
     setDiagonalRightForwardFastSpeed(n: number): void;
     setDiagonalRightBackSpeed(n: number): void;
@@ -127,8 +127,8 @@ export declare class CharacterController {
     setDiagonalRightBackFastAnim(rangeName: string | AnimationGroup, rate: number, loop: boolean): void;
     setDiagonalLeftBackAnim(rangeName: string | AnimationGroup, rate: number, loop: boolean): void;
     setDiagonalLeftBackFastAnim(rangeName: string | AnimationGroup, rate: number, loop: boolean): void;
-    setDiagonalLeftAnim(rangeName: string | AnimationGroup, rate: number, loop: boolean): void;
-    setDiagonalLeftFastAnim(rangeName: string | AnimationGroup, rate: number, loop: boolean): void;
+    setDiagonalLeftForwardAnim(rangeName: string | AnimationGroup, rate: number, loop: boolean): void;
+    setDiagonalLeftForwardFastAnim(rangeName: string | AnimationGroup, rate: number, loop: boolean): void;
     setIdleJumpAnim(rangeName: string | AnimationGroup, rate: number, loop: boolean): void;
     setRunJumpAnim(rangeName: string | AnimationGroup, rate: number, loop: boolean): void;
     setFallAnim(rangeName: string | AnimationGroup, rate: number, loop: boolean): void;
@@ -199,10 +199,12 @@ export declare class CharacterController {
     private _setRHS;
     private _strafeFactorWithForward;
     setStrafeFactorWithForward(n: number): void;
+    private _strafeFactorWithForwardFast;
+    setStrafeFactorWithForwardFast(n: number): void;
     private _strafeFactorWithBackward;
     setStrafeFactorWithBackward(n: number): void;
-    private _strafeFactor;
-    setStrafeFactor(n: number): void;
+    private _strafeFactorWithBackwardFast;
+    setStrafeFactorWithBackwardFast(n: number): void;
     /**
      * Use setFaceForward(true|false) to indicate that the avatar face  faces forward (true) or backward (false).
      * The avatar face faces forward if its face points to positive local Z axis direction

@@ -88,10 +88,10 @@ export class CharacterController {
   public setRightFastSpeed(n: number) {
     this._actionMap.strafeRightFast.speed = n;
   }
-  public setDiagonalLeftSpeed(n: number) {
+  public setDiagonalLeftForwardSpeed(n: number) {
     this._actionMap.diagonalLeftForward.speed = n;
   }
-  public setDiagonalLeftFastSpeed(n: number) {
+  public setDiagonalLeftForwardFastSpeed(n: number) {
     this._actionMap.diagonalLeftForwardFast.speed = n;
   }
   public setDiagonalRightForwardSpeed(n: number) {
@@ -426,11 +426,11 @@ export class CharacterController {
   public setDiagonalLeftBackFastAnim(rangeName: string | AnimationGroup, rate: number, loop: boolean) {
     this._setAnim(this._actionMap.diagonalLeftBackFast, rangeName, rate, loop);
   }
-  public setDiagonalLeftAnim(rangeName: string | AnimationGroup, rate: number, loop: boolean) {
+  public setDiagonalLeftForwardAnim(rangeName: string | AnimationGroup, rate: number, loop: boolean) {
     this._setAnim(this._actionMap.diagonalLeftForward, rangeName, rate, loop);
     this._copySlowAnims(this._actionMap.diagonalLeftForwardFast, this._actionMap.diagonalLeftForward);
   }
-  public setDiagonalLeftFastAnim(rangeName: string | AnimationGroup, rate: number, loop: boolean) {
+  public setDiagonalLeftForwardFastAnim(rangeName: string | AnimationGroup, rate: number, loop: boolean) {
     this._setAnim(this._actionMap.diagonalLeftForwardFast, rangeName, rate, loop);
   }
   public setIdleJumpAnim(rangeName: string | AnimationGroup, rate: number, loop: boolean) {
@@ -610,13 +610,17 @@ export class CharacterController {
   public setStrafeFactorWithForward(n: number) {
     this._strafeFactorWithForward = n;
   }
+  private _strafeFactorWithForwardFast: number = 1;
+  public setStrafeFactorWithForwardFast(n: number) {
+    this._strafeFactorWithForwardFast = n;
+  }
   private _strafeFactorWithBackward: number = 0.15;
   public setStrafeFactorWithBackward(n: number) {
     this._strafeFactorWithBackward = n;
   }
-  private _strafeFactor: number = 0.75;
-  public setStrafeFactor(n: number) {
-    this._strafeFactor = n;
+  private _strafeFactorWithBackwardFast: number = 0.15;
+  public setStrafeFactorWithBackwardFast(n: number) {
+    this._strafeFactorWithBackwardFast = n;
   }
   /**
    * Use setFaceForward(true|false) to indicate that the avatar face  faces forward (true) or backward (false).
@@ -950,78 +954,65 @@ export class CharacterController {
         case (this._act._diagonalRightForward && this._act._walk):
           sign = -this._signRHS * this._isAvFacingCamera();
           horizDist = this._actionMap.diagonalRightForward.speed * dt;
+          let amountForwardRightForward = this._ffSign * horizDist;
           if (this._act._speedMod) {
+            amountForwardRightForward *= this._strafeFactorWithForwardFast;
             horizDist = this._actionMap.diagonalRightForwardFast.speed * dt;
             anim = (-this._ffSign * sign > 0) ? this._actionMap.diagonalLeftForwardFast : this._actionMap.diagonalRightForwardFast;
           } else {
-            anim = (-this._ffSign * sign > 0) ? this._actionMap.diagonalLeftForward : this._actionMap.diagonalRightForward;
+            amountForwardRightForward *= this._strafeFactorWithForward;
+              anim = (-this._ffSign * sign > 0) ? this._actionMap.diagonalLeftForward : this._actionMap.diagonalRightForward;
           }
-          this._moveVector = this._avatar.calcMovePOV(sign * horizDist, -this._freeFallDist, this._ffSign * horizDist * this._strafeFactorWithForward);
+          this._moveVector = this._avatar.calcMovePOV(sign * horizDist, -this._freeFallDist, amountForwardRightForward);
           moving = true;
           break;
         case (this._act._diagonalLeftForward && this._act._walk):
           sign = this._signRHS * this._isAvFacingCamera();
           horizDist = this._actionMap.diagonalLeftForward.speed * dt;
+          let amountForwardLeftForward = this._ffSign * horizDist;
           if (this._act._speedMod) {
+            amountForwardLeftForward *= this._strafeFactorWithForwardFast;
             horizDist = this._actionMap.diagonalLeftForwardFast.speed * dt;
             anim = (-this._ffSign * sign > 0) ? this._actionMap.diagonalLeftForwardFast : this._actionMap.diagonalRightForwardFast;
           } else {
+            amountForwardLeftForward *= this._strafeFactorWithForward;
             anim = (-this._ffSign * sign > 0) ? this._actionMap.diagonalLeftForward : this._actionMap.diagonalRightForward;
           }
 
-          this._moveVector = this._avatar.calcMovePOV(sign * horizDist, -this._freeFallDist, this._ffSign * horizDist * this._strafeFactorWithForward);
+          this._moveVector = this._avatar.calcMovePOV(sign * horizDist, -this._freeFallDist, amountForwardLeftForward);
           moving = true;
           break;
         case (this._act._diagonalRightBack && this._act._walkback):
           sign = -this._signRHS * this._isAvFacingCamera();
           horizDist = this._actionMap.diagonalRightBack.speed * dt;
+          let amountForwardRightBack = this._ffSign * horizDist;
           if (this._act._speedMod) {
+            amountForwardRightBack *= this._strafeFactorWithBackwardFast;
             horizDist = this._actionMap.diagonalRightBackFast.speed * dt;
             anim = (-this._ffSign * sign > 0) ? this._actionMap.diagonalLeftBackFast : this._actionMap.diagonalRightBackFast;
           } else {
+            amountForwardRightBack *= this._strafeFactorWithBackward;
             anim = (-this._ffSign * sign > 0) ? this._actionMap.diagonalLeftBack : this._actionMap.diagonalRightBack;
           }
-          this._moveVector = this._avatar.calcMovePOV(sign * horizDist, -this._freeFallDist, -this._ffSign * horizDist * this._strafeFactorWithBackward);
+          this._moveVector = this._avatar.calcMovePOV(sign * horizDist, -this._freeFallDist, -amountForwardRightBack);
           moving = true;
           break;
         case (this._act._diagonalLeftBack && this._act._walkback):
           sign = this._signRHS * this._isAvFacingCamera();
           horizDist = this._actionMap.diagonalLeftBack.speed * dt;
+          let amountForwardLeftBack = this._ffSign * horizDist;
           if (this._act._speedMod) {
+            amountForwardLeftBack *= this._strafeFactorWithBackwardFast;
             horizDist = this._actionMap.diagonalLeftBackFast.speed * dt;
             anim = (-this._ffSign * sign > 0) ? this._actionMap.diagonalLeftBackFast : this._actionMap.diagonalRightBackFast;
           } else {
+            amountForwardLeftBack *= this._strafeFactorWithBackward;
             anim = (-this._ffSign * sign > 0) ? this._actionMap.diagonalLeftBack : this._actionMap.diagonalRightBack;
           }
 
-          this._moveVector = this._avatar.calcMovePOV(sign * horizDist, -this._freeFallDist, -this._ffSign * horizDist * this._strafeFactorWithBackward);
+          this._moveVector = this._avatar.calcMovePOV(sign * horizDist, -this._freeFallDist, -amountForwardLeftBack);
           moving = true;
           break;
-        // case (this._act._stepRight && this._act._walkback):
-        //   sign = -this._signRHS * this._isAvFacingCamera();
-        //   horizDist = this._actionMap.strafeRight.speed * dt * this._strafeFactor;
-        //   if (this._act._speedMod) {
-        //     horizDist = this._actionMap.strafeRightFast.speed * dt;
-        //     anim = (-this._ffSign * sign > 0) ? this._actionMap.strafeLeftFast : this._actionMap.strafeRightFast;
-        //   } else {
-        //     anim = (-this._ffSign * sign > 0) ? this._actionMap.strafeLeft : this._actionMap.strafeRight;
-        //   }
-        //   this._moveVector = this._avatar.calcMovePOV(sign * horizDist, -this._freeFallDist, -this._ffSign * horizDist * this._strafeFactorWithBackward);
-        //   moving = true;
-        //   break;
-        // case (this._act._stepLeft && this._act._walkback):
-        //   sign = this._signRHS * this._isAvFacingCamera();
-        //   horizDist = this._actionMap.strafeLeft.speed * dt  * this._strafeFactor;
-        //   if (this._act._speedMod) {
-        //     horizDist = this._actionMap.strafeLeftFast.speed * dt;
-        //     anim = (-this._ffSign * sign > 0) ? this._actionMap.strafeLeftFast : this._actionMap.strafeRightFast;
-        //   } else {
-        //     anim = (-this._ffSign * sign > 0) ? this._actionMap.strafeLeft : this._actionMap.strafeRight;
-        //   }
-        //
-        //   this._moveVector = this._avatar.calcMovePOV(sign * horizDist, -this._freeFallDist, -this._ffSign * horizDist * this._strafeFactorWithBackward);
-        //   moving = true;
-        //   break;
         case (this._act._walk || (this._noRot && this._mode == 0)):
           if (this._act._speedMod) {
             this._wasRunning = true;
@@ -1134,66 +1125,66 @@ export class CharacterController {
       if (this._moveVector.length() > 0.001) {
         this._avatar.moveWithCollisions(this._moveVector);
         //walking up a slope
-        if (this._avatar.position.y > this._avStartPos.y) {
-          const actDisp: Vector3 = this._avatar.position.subtract(this._avStartPos);
-          const _slp: number = this._verticalSlope(actDisp);
-          if (_slp >= this._sl2) {
-            //this._climbingSteps=true;
-            //is av trying to go up steps
-            if (this._stepOffset > 0) {
-              if (this._vMoveTot == 0) {
-                //if just started climbing note down the position
-                this._vMovStartPos.copyFrom(this._avStartPos);
-              }
-              this._vMoveTot = this._vMoveTot + (this._avatar.position.y - this._avStartPos.y);
-              if (this._vMoveTot > this._stepOffset) {
-                //move av back to its position at begining of steps
-                this._vMoveTot = 0;
-                this._avatar.position.copyFrom(this._vMovStartPos);
-                this._endFreeFall();
-              }
-            } else {
-              //move av back to old position
-              this._avatar.position.copyFrom(this._avStartPos);
-              this._endFreeFall();
-            }
-          } else {
-            this._vMoveTot = 0;
-            if (_slp > this._sl1) {
-              //av is on a steep slope , continue increasing the moveFallTIme to deaccelerate it
-              this._fallFrameCount = 0;
-              this._inFreeFall = false;
-            } else {
-              //continue walking
-              this._endFreeFall();
-            }
-          }
-        } else if ((this._avatar.position.y) < this._avStartPos.y) {
-          const actDisp: Vector3 = this._avatar.position.subtract(this._avStartPos);
-          if (!(this._areVectorsEqual(actDisp, this._moveVector, 0.001))) {
-            //AV is on slope
-            //Should AV continue to slide or walk?
-            //if slope is less steeper than acceptable then walk else slide
-            if (this._verticalSlope(actDisp) <= this._sl1) {
-              this._endFreeFall();
-            } else {
-              //av is on a steep slope , continue increasing the moveFallTIme to deaccelerate it
-              this._fallFrameCount = 0;
-              this._inFreeFall = false;
-            }
-          } else {
-            this._inFreeFall = true;
-            this._fallFrameCount++;
-            //AV could be running down a slope which mean freefall,run,frefall run ...
-            //to remove anim flicker, check if AV has been falling down continously for last few consecutive frames
-            //before changing to free fall animation
-            if (this._fallFrameCount > this._fallFrameCountMin) {
-              anim = this._actionMap.fall;
-            }
-          }
-        } else {
-          this._endFreeFall();
-        }
+        // if (this._avatar.position.y > this._avStartPos.y) {
+        //   const actDisp: Vector3 = this._avatar.position.subtract(this._avStartPos);
+        //   const _slp: number = this._verticalSlope(actDisp);
+        //   if (_slp >= this._sl2) {
+        //     //this._climbingSteps=true;
+        //     //is av trying to go up steps
+        //     if (this._stepOffset > 0) {
+        //       if (this._vMoveTot == 0) {
+        //         //if just started climbing note down the position
+        //         this._vMovStartPos.copyFrom(this._avStartPos);
+        //       }
+        //       this._vMoveTot = this._vMoveTot + (this._avatar.position.y - this._avStartPos.y);
+        //       if (this._vMoveTot > this._stepOffset) {
+        //         //move av back to its position at begining of steps
+        //         this._vMoveTot = 0;
+        //         this._avatar.position.copyFrom(this._vMovStartPos);
+        //         this._endFreeFall();
+        //       }
+        //     } else {
+        //       //move av back to old position
+        //       this._avatar.position.copyFrom(this._avStartPos);
+        //       this._endFreeFall();
+        //     }
+        //   } else {
+        //     this._vMoveTot = 0;
+        //     if (_slp > this._sl1) {
+        //       //av is on a steep slope , continue increasing the moveFallTIme to deaccelerate it
+        //       this._fallFrameCount = 0;
+        //       this._inFreeFall = false;
+        //     } else {
+        //       //continue walking
+        //       this._endFreeFall();
+        //     }
+        //   }
+        // } else if ((this._avatar.position.y) < this._avStartPos.y) {
+        //   const actDisp: Vector3 = this._avatar.position.subtract(this._avStartPos);
+        //   if (!(this._areVectorsEqual(actDisp, this._moveVector, 0.001))) {
+        //     //AV is on slope
+        //     //Should AV continue to slide or walk?
+        //     //if slope is less steeper than acceptable then walk else slide
+        //     if (this._verticalSlope(actDisp) <= this._sl1) {
+        //       this._endFreeFall();
+        //     } else {
+        //       //av is on a steep slope , continue increasing the moveFallTIme to deaccelerate it
+        //       this._fallFrameCount = 0;
+        //       this._inFreeFall = false;
+        //     }
+        //   } else {
+        //     this._inFreeFall = true;
+        //     this._fallFrameCount++;
+        //     //AV could be running down a slope which mean freefall,run,frefall run ...
+        //     //to remove anim flicker, check if AV has been falling down continously for last few consecutive frames
+        //     //before changing to free fall animation
+        //     if (this._fallFrameCount > this._fallFrameCountMin) {
+        //       anim = this._actionMap.fall;
+        //     }
+        //   }
+        // } else {
+        //   this._endFreeFall();
+        // }
       }
     }
     return anim;
@@ -1292,6 +1283,9 @@ export class CharacterController {
     if (this._camera.radius <= this._camera.lowerRadiusLimit) {
       if (!this._noFirstPerson && !this._inFP) {
         this._avatar.visibility = 0;
+        this._avatar.getChildMeshes().forEach(child => {
+          child.visibility = 0;
+        })
         this._camera.checkCollisions = false;
         this._saveMode = this._mode;
         this._mode = 0;
@@ -1301,6 +1295,9 @@ export class CharacterController {
       this._inFP = false;
       this._mode = this._saveMode;
       this._avatar.visibility = 1;
+      this._avatar.getChildMeshes().forEach(child => {
+        child.visibility = 1;
+      })
       this._camera.checkCollisions = this._savedCameraCollision;
     }
   }
