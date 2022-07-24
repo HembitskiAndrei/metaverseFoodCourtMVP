@@ -29,6 +29,7 @@ import {getSatellitesForReflection} from "../utils/getSatelittesForReflection";
 import {AddInfoPopUp, createAdvancedTextureForGUI} from "../utils/gui";
 import {InfoAnimation} from "../utils/infoAnimation";
 import {Texture} from "@babylonjs/core/Materials/Textures/texture";
+import {AnimationGroup} from "@babylonjs/core/Animations/animationGroup";
 
 export class MainScene extends Scene {
   engine: Engine;
@@ -86,9 +87,6 @@ export class MainScene extends Scene {
     this.camera.setTarget(Vector3.Zero());
     this.camera.attachControl(this.canvas);
 
-    // const bgCamera = new ArcRotateCamera("Camera", 0, Math.PI / 2, 15, new Vector3(0, 5, 5), this);
-    // bgCamera.layerMask = 2;
-
     createEnvironment(this);
 
     const advancedDynamicTexture = createAdvancedTextureForGUI("gui");
@@ -102,6 +100,12 @@ export class MainScene extends Scene {
         advancedDynamicTexture
       );
     }
+
+    const barmanMeshTask = this.assetsManager.addMeshTask("barmanMeshTask", "", "./assets/meshes/", "female.glb");
+    barmanMeshTask.onSuccess = task => {
+      task.loadedMeshes[0].position = new Vector3(0, 0, -3);
+      (this.getAnimationGroupByName("idleBarman") as AnimationGroup).start(true, 0.5);
+    };
 
     const roomMeshTask = this.assetsManager.addMeshTask("roomMeshTask", "", "./assets/meshes/", "room.glb");
     roomMeshTask.onSuccess = task => {

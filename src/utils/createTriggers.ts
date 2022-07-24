@@ -12,7 +12,7 @@ export const createTriggers = (
   const triggerMesh = Mesh.CreateBox("triggerMesh", 1, scene);
   // triggerMesh.registerInstancedBuffer("triggersCount", 2);
   // triggerMesh.instancedBuffers.carsCount = new Vector2(0, 0);
-  triggerMesh.visibility = 0.25;
+  triggerMesh.visibility = 0;
   triggerMesh.position = new Vector3(0, -10, 0);
 
   const triggerInstances: InstancedMesh[] = [];
