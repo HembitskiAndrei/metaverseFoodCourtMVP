@@ -1,11 +1,8 @@
-import {
-  AdvancedDynamicTexture,
-  Control,
-  Rectangle,
-  TextBlock,
-  TextWrapping,
-  Image
-} from "@babylonjs/gui";
+import {Image} from "@babylonjs/gui/2D/controls/image";
+import {TextBlock, TextWrapping} from "@babylonjs/gui/2D/controls/textBlock";
+import {Rectangle} from "@babylonjs/gui/2D/controls/rectangle";
+import {Control} from "@babylonjs/gui/2D/controls/control";
+import {AdvancedDynamicTexture} from "@babylonjs/gui/2D/advancedDynamicTexture";
 import {
   DEFAULT_COLOR_BACKGROUND,
   DEFAULT_COLOR_BORDER,

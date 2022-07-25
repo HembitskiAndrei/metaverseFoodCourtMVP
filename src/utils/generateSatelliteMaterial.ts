@@ -1,10 +1,8 @@
-import {
-  Mesh,
-  PBRMaterial,
-  Scene,
-  ReflectionProbe,
-  RenderTargetTexture
-} from "@babylonjs/core";
+import {RenderTargetTexture} from "@babylonjs/core/Materials/Textures/renderTargetTexture";
+import {Mesh} from "@babylonjs/core/Meshes/mesh";
+import {PBRMaterial} from "@babylonjs/core/Materials/PBR/pbrMaterial";
+import {Scene} from "@babylonjs/core/scene";
+import {ReflectionProbe} from "@babylonjs/core/Probes/reflectionProbe";
 
 export const generateSatelliteMaterial = (root: Mesh, others: Mesh[], scene: Scene) => {
   const probe = new ReflectionProbe("satelliteProbe" + root.name, 512, scene);

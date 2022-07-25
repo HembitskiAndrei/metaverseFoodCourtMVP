@@ -1,5 +1,7 @@
 import { Rectangle } from "@babylonjs/gui";
-import {Animation, CubicEase, EasingFunction, AnimationGroup} from "@babylonjs/core";
+import {AnimationGroup} from "@babylonjs/core/Animations/animationGroup";
+import {Animation} from "@babylonjs/core/Animations/animation";
+import {CubicEase, EasingFunction} from "@babylonjs/core/Animations/easing"
 
 export const InfoAnimation = (
   object: Rectangle,

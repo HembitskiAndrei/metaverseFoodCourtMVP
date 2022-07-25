@@ -2,7 +2,7 @@ import type { Scene } from "@babylonjs/core/scene";
 import { IInstanceConfig } from "types";
 import {Mesh} from "@babylonjs/core/Meshes/mesh";
 import type {InstancedMesh} from "@babylonjs/core/Meshes/instancedMesh";
-import { Vector2, Vector3 } from "@babylonjs/core/Maths/math.vector";
+import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { ActionManager } from "@babylonjs/core/Actions/actionManager";
 
 export const createTriggers = (

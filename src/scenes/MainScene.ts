@@ -18,8 +18,7 @@ import {Mesh} from "@babylonjs/core/Meshes/mesh";
 import { createEnvironment } from "../utils/createEnvironment";
 import { CharacterController } from "../components/CharacterController";
 import {PBRMaterial} from "@babylonjs/core/Materials/PBR/pbrMaterial";
-import {DefaultRenderingPipeline} from "@babylonjs/core/PostProcesses/RenderPipeline/Pipelines/defaultRenderingPipeline";
-import {FxaaPostProcess, TonemapPostProcess, TonemappingOperator, ColorCorrectionPostProcess} from "@babylonjs/core/PostProcesses/";
+import {FxaaPostProcess, ColorCorrectionPostProcess} from "@babylonjs/core/PostProcesses/";
 import {TRIGGER_CONFIGS, LABEL_ANIMATION_DURATION, MENU_CONFIGS} from "../utils/constants";
 import {createTriggers} from "../utils/createTriggers";
 import {generateSatelliteMaterial} from "../utils/generateSatelliteMaterial";
@@ -28,7 +27,6 @@ import {HighlightLayer} from "@babylonjs/core/Layers/highlightLayer";
 import {getSatellitesForReflection} from "../utils/getSatelittesForReflection";
 import {AddInfoPopUp, createAdvancedTextureForGUI} from "../utils/gui";
 import {InfoAnimation} from "../utils/infoAnimation";
-import {Texture} from "@babylonjs/core/Materials/Textures/texture";
 import {AnimationGroup} from "@babylonjs/core/Animations/animationGroup";
 
 export class MainScene extends Scene {
@@ -108,7 +106,7 @@ export class MainScene extends Scene {
     };
 
     const roomMeshTask = this.assetsManager.addMeshTask("roomMeshTask", "", "./assets/meshes/", "room.glb");
-    roomMeshTask.onSuccess = task => {
+    roomMeshTask.onSuccess = () => {
       const room = <Mesh>this.getMeshByName("room");
       room.checkCollisions = true;
       const glass = <Mesh>this.getMeshByName("glass");
@@ -322,13 +320,8 @@ export class MainScene extends Scene {
         cc.setStrafeFactorWithBackwardFast(2.7);
 
         cc.start();
-
-      // const defaultPipeline = new DefaultRenderingPipeline("default", true, this, [camera]);
-      // defaultPipeline.imageProcessing.contrast = 1;
-      // defaultPipeline.imageProcessing.exposure = 1;
-      const fxaaPostProcess = new FxaaPostProcess("fxaa", 2.0, camera);
-      // const tonemapPostProcess = new TonemapPostProcess("tonemap", TonemappingOperator.Photographic, 1.0, camera);
-      const colorCorrectionPostProcess = new ColorCorrectionPostProcess("color_correction", "./assets/textures/lut.png", 1.0, camera);
+      new FxaaPostProcess("fxaa", 2.0, camera);
+      new ColorCorrectionPostProcess("color_correction", "./assets/textures/lut.png", 1.0, camera);
     };
   }
 }
