@@ -7,6 +7,11 @@ export const TRIGGER_CONFIGS = [
     size: new Vector3(0.5, 0.5, 0.5),
   },
   {
+    index: "cake",
+    position: new Vector3(-1.2, 0, -1),
+    size: new Vector3(0.5, 0.5, 0.5),
+  },
+  {
     index: "bread",
     position: new Vector3(1.2, 0, -0.7),
     size: new Vector3(0.5, 0.5, 0.5),
@@ -17,38 +22,51 @@ export const TRIGGER_CONFIGS = [
     size: new Vector3(0.5, 0.5, 0.5),
   },
   {
-    index: "menu",
+    index: "hotDog",
+    position: new Vector3(1.2, 0, 2.0),
+    size: new Vector3(0.5, 0.5, 0.5),
+  },
+  {
+    index: "cocktail",
     position: new Vector3(-0.4, 0, -1.5),
     size: new Vector3(0.5, 0.5, 0.5),
   },
 ]
+
+const sizeInfo = {
+  width: "440px",
+  height: "440px"
+}
+
 export const MENU_CONFIGS = {
   bread: {
-    titleText: "Bread",
-    text: "-   Pack my box with five dozen liquor jugs.\n-    Cozy sphinx waves quart jug of bad milk.",
-    width: "200px",
-    height: "100px",
+    width: sizeInfo.width,
+    height: sizeInfo.height,
     imageURL: "./assets/textures/bread.jpg"
   },
+  cake: {
+    width: sizeInfo.width,
+    height: sizeInfo.height,
+    imageURL: "./assets/textures/cake.jpg"
+  },
   Pizza: {
-    titleText: "Pizza",
-    text: "-   Pack my box with five dozen liquor jugs.\n-  Cozy sphinx waves quart jug of bad milk.",
-    width: "200px",
-    height: "100px",
+    width: sizeInfo.width,
+    height: sizeInfo.height,
     imageURL: "./assets/textures/Pizza.jpg"
   },
   dish: {
-    titleText: "Soup",
-    text: "-   Pack my box with five dozen liquor jugs.\n-    Cozy sphinx waves quart jug of bad milk.",
-    width: "200px",
-    height: "100px",
+    width: sizeInfo.width,
+    height: sizeInfo.height,
     imageURL: "./assets/textures/dish.jpg"
   },
-  menu: {
-    titleText: "Drinks",
-    text: "-   Pack my box with five dozen liquor jugs.\n-    Cozy sphinx waves quart jug of bad milk.",
-    width: "200px",
-    height: "100px",
+  hotDog: {
+    width: sizeInfo.width,
+    height: sizeInfo.height,
+    imageURL: "./assets/textures/hotdog.jpg"
+  },
+  cocktail: {
+    width: sizeInfo.width,
+    height: sizeInfo.height,
     imageURL: "./assets/textures/menu.jpg"
   },
 }

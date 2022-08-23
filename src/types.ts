@@ -7,8 +7,6 @@ export interface IInstanceConfig {
 }
 
 export type TInfoConfig = {
-  titleText: string;
-  text: string;
   width: string;
   height: string;
   imageURL?: string;

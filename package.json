@@ -61,6 +61,8 @@
     "rollup-plugin-serve": "1.1.0",
     "rollup-plugin-terser": "7.0.2",
     "rollup-plugin-typescript2": "0.31.2",
+    "rollup-plugin-obfuscator": "0.2.2",
+    "javascript-obfuscator": "4.0.0",
     "typescript": "^4.2.3"
   }
 }

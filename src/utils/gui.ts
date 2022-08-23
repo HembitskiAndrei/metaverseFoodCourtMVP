@@ -1,5 +1,4 @@
 import {Image} from "@babylonjs/gui/2D/controls/image";
-import {TextBlock, TextWrapping} from "@babylonjs/gui/2D/controls/textBlock";
 import {Rectangle} from "@babylonjs/gui/2D/controls/rectangle";
 import {Control} from "@babylonjs/gui/2D/controls/control";
 import {AdvancedDynamicTexture} from "@babylonjs/gui/2D/advancedDynamicTexture";
@@ -7,13 +6,12 @@ import {
   DEFAULT_COLOR_BACKGROUND,
   DEFAULT_COLOR_BORDER,
   SHADOW_COLOR_BORDER,
-  TEXT_COLOR,
 } from "./constants";
 import {TInfoConfig} from "../types";
 
 export const createAdvancedTextureForGUI = (name: string) => {
   const advancedTexture = AdvancedDynamicTexture.CreateFullscreenUI(name);
-  advancedTexture.idealWidth = 800;
+  advancedTexture.idealHeight = 600;
   return advancedTexture;
 };
 
@@ -47,51 +45,12 @@ export const AddInfoPopUp = (
   container.shadowBlur = 50;
   advancedTexture.addControl(container);
 
-  const titleText = new TextBlock();
-  titleText.paddingTopInPixels = 5;
-  titleText.text = cnf.titleText;
-  titleText.color = TEXT_COLOR;
-  titleText.fontSize = 16;
-  titleText.textHorizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER;
-  titleText.textVerticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
-  container.addControl(titleText);
-
-  const infoText = new TextBlock();
-  infoText.paddingLeftInPixels = 80;
-  infoText.paddingRightInPixels = 5;
-  infoText.paddingTopInPixels = 35;
-  infoText.paddingBottomInPixels = 5;
-  infoText.text = cnf.text;
-  infoText.color = TEXT_COLOR;
-  infoText.fontSize = 11;
-  // infoText.resizeToFit = true;
-  infoText.textWrapping = TextWrapping.WordWrap;
-  infoText.textHorizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
-  infoText.textVerticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
-  container.addControl(infoText);
-
-  const imageContainer = new Rectangle();
-  imageContainer.width = "60px";
-  imageContainer.height = "60px";
-  imageContainer.left = "5px";
-  imageContainer.top = "30px";
-  imageContainer.cornerRadius = 5;
-  imageContainer.color = TEXT_COLOR;
-  imageContainer.thickness = 2;
-  imageContainer.background = DEFAULT_COLOR_BACKGROUND;
-  imageContainer.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
-  imageContainer.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
-  container.addControl(imageContainer);
-
   const img = new Image("", cnf.imageURL);
   img.width = 1;
   img.height = 1;
   img.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER;
   img.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER;
-  imageContainer.addControl(img);
+  container.addControl(img);
 
-  return {
-    container,
-    infoText,
-  };
+  return container
 };

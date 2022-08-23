@@ -1,6 +1,7 @@
 import commonjs from "rollup-plugin-commonjs";
 import replace from "@rollup/plugin-replace";
 import { terser } from "rollup-plugin-terser";
+import obfuscator from 'rollup-plugin-obfuscator';
 import resolve from "rollup-plugin-node-resolve";
 import typescript from "rollup-plugin-typescript2";
 import copy from "rollup-plugin-copy-assets";
@@ -45,5 +46,6 @@ export default {
     copy({
       assets: ["src/assets", "src/index.html"],
     }),
+    obfuscator(),
   ],
 };

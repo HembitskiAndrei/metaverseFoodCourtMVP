@@ -28,6 +28,7 @@ import {getSatellitesForReflection} from "../utils/getSatelittesForReflection";
 import {AddInfoPopUp, createAdvancedTextureForGUI} from "../utils/gui";
 import {InfoAnimation} from "../utils/infoAnimation";
 import {AnimationGroup} from "@babylonjs/core/Animations/animationGroup";
+import {getHighlightMeshes} from "../utils/getHighlightMeshes";
 
 export class MainScene extends Scene {
   engine: Engine;
@@ -71,19 +72,21 @@ export class MainScene extends Scene {
 
     const gridTextureTask = this.assetsManager.addTextureTask("gridTextureTask", "./assets/textures/grid.png");
     gridTextureTask.onSuccess = task => {
+      task.texture.uScale = 10;
+      task.texture.vScale = 10;
       groundMaterial.albedoTexture = task.texture;
     }
 
     this.camera = new ArcRotateCamera("Camera", 0, Math.PI / 2, 15, new Vector3(0, 5, 5), this);
     this.camera.layerMask = 2;
-    this.camera.position = new Vector3(0, 6, 10);
-    this.camera.minZ = 0.0;
-    this.camera.maxZ = 100;
-    this.camera.lowerRadiusLimit = 7;
-    this.camera.upperRadiusLimit = 12;
-    this.camera.wheelDeltaPercentage = 0.01;
-    this.camera.setTarget(Vector3.Zero());
-    this.camera.attachControl(this.canvas);
+    // this.camera.position = new Vector3(0, 6, 10);
+    // this.camera.minZ = 0.0;
+    // this.camera.maxZ = 100;
+    // this.camera.lowerRadiusLimit = 7;
+    // this.camera.upperRadiusLimit = 12;
+    // this.camera.wheelDeltaPercentage = 0.01;
+    // this.camera.setTarget(Vector3.Zero());
+    // this.camera.attachControl(this.canvas);
 
     createEnvironment(this);
 
@@ -115,15 +118,15 @@ export class MainScene extends Scene {
       glassMaterial.albedoColor = Color3.White();
       glassMaterial.metallic = 1;
       glassMaterial.roughness = 1;
-      glassMaterial.alpha = 0.05;
+      glassMaterial.alpha = 0.25;
       glassMaterial.transparencyMode = PBRMaterial.PBRMATERIAL_ALPHABLEND;
       // sheen
       glassMaterial.sheen.isEnabled = true;
       if(glassMaterial.sheen){
-        glassMaterial.sheen.color = Color3.FromHexString("#98e9ff");
+        glassMaterial.sheen.color = Color3.FromHexString("#ffefc4");
       }
       // SSS things
-      glassMaterial.subSurface.tintColor = Color3.FromHexString("#c4eaff");
+      glassMaterial.subSurface.tintColor = Color3.FromHexString("#fff7ea");
       glassMaterial.subSurface.isTranslucencyEnabled = true;
       if (glassMaterial.subSurface.isTranslucencyEnabled) {
         glassMaterial.subSurface.translucencyIntensity = 2;
@@ -173,9 +176,11 @@ export class MainScene extends Scene {
       triggerInstances.forEach((triggerInstance) => {
           createIntersectionEnterAction(triggerInstance, shoes, () => {
             const itemName = triggerInstance.name.split("_")[0];
-            this.hl.addMesh(<Mesh>this.getMeshByName(itemName), Color3.Red());
+            getHighlightMeshes(itemName, this).forEach(mesh => {
+              this.hl.addMesh(<Mesh>mesh, Color3.Red());
+            })
             InfoAnimation(
-              menuInfos[itemName].container,
+              menuInfos[itemName],
               0,
               1,
               LABEL_ANIMATION_DURATION
@@ -183,9 +188,11 @@ export class MainScene extends Scene {
           });
           createIntersectionExitAction(triggerInstance, shoes, () => {
             const itemName = triggerInstance.name.split("_")[0];
-            this.hl.removeMesh(<Mesh>this.getMeshByName(itemName));
+            getHighlightMeshes(itemName, this).forEach(mesh => {
+              this.hl.removeMesh(<Mesh>mesh);
+            })
             InfoAnimation(
-              menuInfos[itemName].container,
+              menuInfos[itemName],
               1,
               0,
               LABEL_ANIMATION_DURATION
@@ -196,6 +203,9 @@ export class MainScene extends Scene {
       this.lights.forEach(light => {
         light.intensity = 0.75;
       });
+      this.meshes.forEach(mesh => {
+        mesh.layerMask = 1;
+      })
     };
 
     window.addEventListener("resize", () => {
@@ -225,6 +235,7 @@ export class MainScene extends Scene {
         let target = new Vector3(player.position.x,player.position.y+1.5,player.position.z);
 
         let camera = new ArcRotateCamera("ArcRotateCamera",alpha,beta,2,target,scene);
+        camera.layerMask = 1;
         camera.minZ = 0.0;
         camera.wheelPrecision = 15;
         camera.checkCollisions = false;
@@ -235,7 +246,8 @@ export class MainScene extends Scene {
         camera.lowerRadiusLimit = 0.5;
         camera.upperRadiusLimit = 4;
         camera.attachControl(canvas,false);
-        this.activeCamera = camera;
+        this.activeCameras = [camera, this.camera];
+        // this.activeCamera = camera;
 
         const animationGroups = {};
         task.loadedAnimationGroups.forEach(group => {
@@ -320,8 +332,8 @@ export class MainScene extends Scene {
         cc.setStrafeFactorWithBackwardFast(2.7);
 
         cc.start();
-      new FxaaPostProcess("fxaa", 2.0, camera);
-      new ColorCorrectionPostProcess("color_correction", "./assets/textures/lut.png", 1.0, camera);
+        new FxaaPostProcess("fxaa", 1.0, camera);
+        new ColorCorrectionPostProcess("color_correction", "./assets/textures/lut.png", 1.0, camera);
     };
   }
 }
